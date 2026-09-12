@@ -1,0 +1,40 @@
+
+# Web / API layer
+fastapi>=0.115.0  #We will be building the entie backed service using fastAPI
+uvicorn[standard]>=0.30.0 #run fast api server
+python-multipart>=0.0.9 #fastapi depedencies
+jinja2>=3.1.4 #load html css and the other codes
+
+#Config & validation
+python-dotenv>=1.0.1 #manage environment variables such as the secret keys
+pydantic>=2.8.0 #for data validation ,have sturvuterd output
+
+#LangChain core stack
+langchain>=0.3.0 #load model ,perform the chucnking  operations 
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-text-splitters>=0.3.0 # chuncking operations
+
+#LLM provider (Groq) 
+#langchain-openai>=0.3.0 #open AI model
+langchain-groq>=0.2.0
+
+#Embeddings provider (Hugging Face Inference API)
+langchain-huggingface>=0.1.0
+
+#Graph orchestration (Self-RAG)
+langchain-pinecone>=0.2.0 #database
+langgraph>=0.2.0 #workflow development
+langgraph-checkpoint-sqlite>=2.0.0 #sqlite for persistence memory,ypu ca chang ethe database as  per the requirements
+pinecone>=5.0.0  #individual package
+
+
+#Vector store (local, lightweight)
+faiss-cpu>=1.8.0
+
+#Web search tool (Self-RAG relevance checking)
+tavily-python>=0.5.0 #perform internet search
+
+#Document loaders 
+pypdf>=5.0.0 #load pdf documenents
+python-docx>=1.1.2 #load documnet files
