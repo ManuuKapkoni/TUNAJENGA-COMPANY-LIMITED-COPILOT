@@ -16,22 +16,22 @@ files = [
     "app.py",
     "data_ingestion.py",
     "requirements.txt",
-    "dockerfile",
-    ".env"
+    "Dockerfile",
+    ".env",
 
     #source files
-    "src/__init__.py" #constuctor file where we will be importig our functionilty
+    "src/__init__.py", #constuctor file where we will be importig our functionilty
     "src/config.py",
     "src/db.py",
     "src/ingestion.py",
     "src/models.py",
     "src/self_rag.py",
-    "src/vectorstore.py"
+    "src/vectorstore.py",
 
     #frontend
     "templates/index.html",
-    "static/style.css"
-    "static/app.js"
+    "static/style.css",
+    "static/app.js",
 
 ]
 def create_project_structure():
