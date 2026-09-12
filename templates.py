@@ -34,7 +34,6 @@ files = [
     "static/app.js"
 
 ]
-
 def create_project_structure():
     #create folders
     for folder in folders:
