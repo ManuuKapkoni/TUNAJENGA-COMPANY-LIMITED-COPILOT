@@ -19,9 +19,18 @@ class Settings(BaseModel):
     embedding_model: str = os.getenv(
         "EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
     )
+    embedding_dimension: int = int(os.getenv("EMBEDDING_DIMENSION", "384"))
 
     # FAISS (local vector store)
     faiss_index_path: str = os.getenv("FAISS_INDEX_PATH", "data/faiss_index")
+
+
+    # Pinecone
+    pinecone_api_key: str = os.getenv("PINECONE_API_KEY", "")
+    pinecone_index_name: str = os.getenv("PINECONE_INDEX_NAME", "tunajengafdeindexv2")
+    pinecone_namespace: str = os.getenv("PINECONE_NAMESPACE", "tunajenga-runbooks")
+    pinecone_cloud: str = os.getenv("PINECONE_CLOUD", "aws")
+    pinecone_region: str = os.getenv("PINECONE_REGION", "us-east-1")
 
     # Internet search
     tavily_api_key: str = os.getenv("TAVILY_API_KEY", "")
