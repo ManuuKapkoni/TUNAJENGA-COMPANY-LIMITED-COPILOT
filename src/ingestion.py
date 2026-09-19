@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List
 from hashlib import sha256
+import re
 
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
@@ -23,25 +24,55 @@ def _load_docx(path: Path) -> List[Document]:
             metadata={"source": str(path), "title": path.name},
         )
     ]
+def _strip_markdown(text: str) -> str:
+    text = re.sub(r"^\s{0,3}#{1,6}\s*", "", text, flags=re.MULTILINE)
+    text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
+    text = re.sub(r"__(.+?)__", r"\1", text)
+    text = re.sub(r"(?<!\*)\*(?!\s)(.+?)(?<!\s)\*(?!\*)", r"\1", text)
+    text = re.sub(r"`([^`]+)`", r"\1", text)
+    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1 (\2)", text)
+    text = re.sub(r"^\s*[-*+]\s+", "• ", text, flags=re.MULTILINE)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
 
 
+# def load_file(path: Path) -> List[Document]:
+#     ext = path.suffix.lower()
+
+#     if ext == ".pdf":
+#         docs = PyPDFLoader(str(path)).load()
+#     elif ext in [".txt", ".text"]:
+#         return TextLoader(str(path)).load()
+#     elif ext in [".md", ".markdown"]:
+#         return TextLoader(str(path)).load()
+#     elif ext == ".docx":
+#         docs = _load_docx(path)
+#     else:
+#         raise ValueError(
+#             f"Unsupported file type: {ext}. Use PDF, TXT, MD, or DOCX."
+#         )
+
+#     for d in docs:
+#         d.metadata.setdefault("source", str(path))
+#         d.metadata.setdefault("title", path.name)
+#         d.metadata["document_name"] = path.name
+
+#     return docs
 def load_file(path: Path) -> List[Document]:
     ext = path.suffix.lower()
 
     if ext == ".pdf":
         docs = PyPDFLoader(str(path)).load()
-    elif ext in [".txt", ".text"]:
-        return TextLoader(str(path)).load()
-    elif ext in [".md", ".markdown"]:
-        return TextLoader(str(path)).load()
+    elif ext in [".txt", ".text", ".md", ".markdown"]:
+        docs = TextLoader(str(path), encoding="utf-8").load()
     elif ext == ".docx":
         docs = _load_docx(path)
     else:
-        raise ValueError(
-            f"Unsupported file type: {ext}. Use PDF, TXT, MD, or DOCX."
-        )
+        raise ValueError(f"Unsupported file type: {ext}")
 
+    # ✅ Clean markdown from every page's content
     for d in docs:
+        d.page_content = _strip_markdown(d.page_content)
         d.metadata.setdefault("source", str(path))
         d.metadata.setdefault("title", path.name)
         d.metadata["document_name"] = path.name
@@ -97,6 +128,9 @@ def ingest_directory(directory: Path) -> int:
         if path.is_file() and path.suffix.lower() in SUPPORTED:
             total += ingest_file(path)
     return total
+
+
+
 
 
 def namespace() -> str:
